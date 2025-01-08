@@ -1,0 +1,23 @@
+from machine import Pin, I2C
+import time
+from lcd import LCD
+
+# Configuración de I2C en el ESP32 (ajustar si es necesario)
+i2c = I2C(scl=Pin(22), sda=Pin(21), freq=400000)
+
+# Crear el objeto LCD (ajustar la dirección I2C si es necesario)
+lcd = LCD(i2c)
+
+# Nombre que queremos mostrar
+nombre = "Tu Nombre"
+
+# Configurar la pantalla LCD
+lcd.clear()
+lcd.set_contrast(50)
+
+# Mostrar el nombre en movimiento
+while True:
+    for i in range(len(nombre) + 16):  # Se mueve hasta fuera de la pantalla
+        lcd.clear()
+        lcd.putstr(nombre[i:i+16])  # Mostrar una parte del nombre en la pantalla
+        time.sleep(0.2)  # Ajustar la velocidad del movimiento
