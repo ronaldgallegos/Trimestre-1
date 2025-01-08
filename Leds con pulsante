@@ -1,0 +1,15 @@
+from machine import Pin
+from time import sleep
+
+# Configuración de pines
+led = Pin(2, Pin.OUT)  # Pin GPIO 2 para el LED
+button = Pin(4, Pin.IN, Pin.PULL_DOWN)  # Pin GPIO 4 para el botón
+
+# Estado inicial del LED
+led_state = False
+
+while True:
+    if button.value() == 1:  # Si se presiona el botón
+        led_state = not led_state  # Cambiar estado del LED
+        led.value(led_state)  # Encender o apagar el LED
+        sleep(0.3)  # Pequeño retraso para evitar rebotes
