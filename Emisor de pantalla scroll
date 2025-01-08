@@ -1,0 +1,20 @@
+' Definir los pines de conexión
+lcd_rs = 15     ' Pin RS del LCD
+lcd_en = 2      ' Pin EN del LCD
+lcd_d4 = 0      ' Pin D4 del LCD
+lcd_d5 = 4      ' Pin D5 del LCD
+lcd_d6 = 5      ' Pin D6 del LCD
+lcd_d7 = 18     ' Pin D7 del LCD
+
+' Inicializar la pantalla LCD
+LCD.Init lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7, 16, 2 ' 16x2 columnas y filas
+
+' Enviar un mensaje a la pantalla LCD
+LCD.Clear
+LCD.SetCursor 0, 0   ' Mover el cursor a la posición (0, 0)
+LCD.Print "Hola, Mundo!"  ' Imprimir mensaje
+
+' Bucle para mantener el mensaje
+Do
+    Pause 1000  ' Pausar 1 segundo
+Loop
