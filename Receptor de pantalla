@@ -1,0 +1,33 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+#define RECEPTOR_ADDR 0x27  // Dirección de la pantalla LCD del receptor
+
+LiquidCrystal_I2C lcd(0x27, 16, 2); // LCD receptor
+
+void setup() {
+  Serial.begin(115200);  // Iniciar la comunicación serial para depuración
+  Wire.begin(RECEPTOR_ADDR);  // Iniciar el receptor en I2C con la dirección
+
+  lcd.begin(16, 2);  // Inicializar pantalla LCD
+  lcd.backlight();  // Encender retroiluminación
+  lcd.setCursor(0, 0);
+  lcd.print("Receptor ESP32");
+
+  delay(2000);
+  lcd.clear();
+  Serial.println("Receptor listo. Esperando mensaje...");
+}
+
+void loop() {
+  // Verifica si hay datos para leer
+  Wire.requestFrom(RECEPTOR_ADDR, 32);  // Solicitar hasta 32 bytes del emisor
+
+  while (Wire.available()) {
+    char received = Wire.read();  // Leer un byte de la transmisión
+    Serial.print(received);  // Mostrar el mensaje en la terminal serial
+    lcd.print(received);  // Mostrar el mensaje en el LCD
+  }
+
+  delay(100);
+}
