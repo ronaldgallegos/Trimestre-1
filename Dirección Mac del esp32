@@ -1,0 +1,17 @@
+#include <WiFi.h>
+
+void setup() {
+  // Inicializa la comunicación serial
+  Serial.begin(115200);
+
+  // Conecta el ESP32 a una red Wi-Fi (no necesario para obtener la MAC)
+  // WiFi.begin("SSID", "Password");
+
+  // Imprime la dirección MAC
+  Serial.print("La dirección MAC del ESP32 es: ");
+  Serial.println(WiFi.macAddress());
+}
+
+void loop() {
+  // No es necesario ningún código en el loop
+}
