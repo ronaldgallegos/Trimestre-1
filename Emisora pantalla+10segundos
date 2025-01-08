@@ -1,0 +1,30 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+// Dirección del LCD (comúnmente 0x27, pero puede variar)
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // 16 columnas y 2 filas
+
+void setup() {
+  // Inicializar la pantalla LCD
+  lcd.begin(16, 2);
+  lcd.setBacklight(1);  // Enciende la luz de fondo (si la pantalla la tiene)
+
+  // Limpiar la pantalla
+  lcd.clear();
+
+  // Mostrar un mensaje inicial
+  lcd.setCursor(0, 0);  // Posicionar el cursor en la fila 0, columna 0
+  lcd.print("Esperando 10s...");
+
+  // Esperar 10 segundos
+  delay(10000);  // 10 segundos
+
+  // Limpiar la pantalla y mostrar un nuevo mensaje
+  lcd.clear();
+  lcd.setCursor(0, 0);  // Volver al inicio de la pantalla
+  lcd.print("¡Texto mostrado!");
+}
+
+void loop() {
+  // No es necesario nada en el loop
+}
