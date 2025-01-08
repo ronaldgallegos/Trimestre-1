@@ -1,0 +1,104 @@
+#include <WiFi.h>
+#include <TFT_eSPI.h>
+#include <SPIFFS.h>  // Para almacenar imágenes en la memoria flash
+
+const char* ssid = "TU_SSID";       // Nombre de la red WiFi
+const char* password = "TU_PASSWORD"; // Contraseña de la red WiFi
+
+TFT_eSPI tft = TFT_eSPI();  // Crear el objeto TFT
+
+// Función para inicializar la pantalla TFT
+void setupTFT() {
+  tft.init();
+  tft.setRotation(3); // Ajusta la rotación de la pantalla si es necesario
+  tft.fillScreen(TFT_BLACK);
+}
+
+// Función para configurar el servidor web
+void setupWiFi() {
+  Serial.begin(115200);
+  delay(10);
+  
+  // Conectar a la red Wi-Fi
+  Serial.print("Conectando a WiFi...");
+  WiFi.begin(ssid, password);
+  
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print(".");
+  }
+
+  Serial.println("Conectado");
+  Serial.print("IP: ");
+  Serial.println(WiFi.localIP());
+}
+
+// Función para manejar solicitudes HTTP
+String handleRequest() {
+  String html = "<html><body><h1>Emisora de Pantalla con ESP32</h1>";
+  html += "<img src='/imagen' width='240' height='320'/>";
+  html += "</body></html>";
+  return html;
+}
+
+void setup() {
+  Serial.begin(115200);
+  setupWiFi();
+  setupTFT();
+  
+  // Montar el sistema de archivos SPIFFS
+  if (!SPIFFS.begin(true)) {
+    Serial.println("Error al montar SPIFFS");
+    return;
+  }
+
+  // Iniciar servidor web
+  WiFiServer server(80);
+  server.begin();
+  Serial.println("Servidor HTTP iniciado");
+
+  while (true) {
+    WiFiClient client = server.available();
+    if (client) {
+      String request = client.readStringUntil('\r');
+      client.flush();
+
+      // Comprobar la solicitud HTTP
+      if (request.indexOf("/imagen") != -1) {
+        // Aquí puedes servir una imagen o lo que desees
+        File imgFile = SPIFFS.open("/imagen.jpg");
+        if (imgFile) {
+          client.println("HTTP/1.1 200 OK");
+          client.println("Content-Type: image/jpeg");
+          client.println("Connection: close");
+          client.println();
+          uint8_t buf[512];
+          while (imgFile.available()) {
+            size_t len = imgFile.read(buf, sizeof(buf));
+            client.write(buf, len);
+          }
+          imgFile.close();
+        } else {
+          client.println("HTTP/1.1 404 Not Found");
+          client.println("Connection: close");
+          client.println();
+        }
+      } else {
+        // Si la solicitud es para la página HTML principal
+        String html = handleRequest();
+        client.println("HTTP/1.1 200 OK");
+        client.println("Content-Type: text/html");
+        client.println("Connection: close");
+        client.println();
+        client.print(html);
+      }
+
+      delay(1);
+      client.stop();
+    }
+  }
+}
+
+void loop() {
+  // No hay código en loop ya que el servidor está corriendo
+}
