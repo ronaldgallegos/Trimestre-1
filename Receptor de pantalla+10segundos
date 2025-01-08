@@ -1,0 +1,30 @@
+#include <TFT_eSPI.h>  // Biblioteca para controlar la pantalla TFT
+
+TFT_eSPI tft = TFT_eSPI();  // Crear un objeto TFT
+
+void setup() {
+  // Iniciar comunicación serial
+  Serial.begin(115200);
+
+  // Inicializar la pantalla TFT
+  tft.init();
+  tft.setRotation(1);  // Configurar la orientación de la pantalla
+  tft.fillScreen(TFT_BLACK);  // Limpiar la pantalla con color negro
+  
+  // Establecer el color y el tamaño de la fuente
+  tft.setTextColor(TFT_WHITE); 
+  tft.setTextSize(2);  // Tamaño de la fuente
+
+  // Mostrar el texto en la pantalla
+  tft.setCursor(50, 50);  // Establecer la posición inicial del texto
+  tft.println("Hola, Mundo!");  // Escribir el texto
+
+  delay(10000);  // Esperar 10 segundos
+
+  // Limpiar la pantalla después de 10 segundos
+  tft.fillScreen(TFT_BLACK);  // Limpiar la pantalla
+}
+
+void loop() {
+  // No hace falta nada en el loop
+}
