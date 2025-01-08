@@ -1,0 +1,34 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+// Dirección I2C del LCD (a veces es 0x27 o 0x3F, depende del modelo)
+LiquidCrystal_I2C lcd(0x27, 16, 2); // 16 columnas y 2 filas
+
+void setup() {
+  // Inicializa la comunicación serie a 115200 baudios
+  Serial.begin(115200);
+  
+  // Inicializa el LCD
+  lcd.begin(16, 2);
+  lcd.backlight();  // Enciende la luz de fondo del LCD
+  
+  lcd.setCursor(0, 0); // Establece el cursor en la primera fila
+  lcd.print("Esperando mensaje..."); // Mensaje inicial
+}
+
+void loop() {
+  // Verifica si hay datos disponibles en el puerto serie
+  if (Serial.available() > 0) {
+    // Lee el mensaje recibido
+    String mensaje = Serial.readString();
+
+    // Limpia la pantalla
+    lcd.clear();
+    
+    // Muestra el mensaje recibido en la pantalla LCD
+    lcd.setCursor(0, 0); // Establece el cursor en la primera fila
+    lcd.print("Mensaje:");
+    lcd.setCursor(0, 1); // Establece el cursor en la segunda fila
+    lcd.print(mensaje);
+  }
+}
